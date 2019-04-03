@@ -39,7 +39,7 @@ do
     echo "run the tag an probe"
     if [ ${object} == "T" ];
     then
-	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp2,catp1 --PO verbose
+	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp2 --PO verbose
     elif [ ${object} == "W" ];
     then	
 	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp2,catp1
