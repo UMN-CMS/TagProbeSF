@@ -27,13 +27,22 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   gStyle->SetPalette(1);
   TH1::SetDefaultSumw2(kTRUE);
 
-  TFile *f_mc   = TFile::Open("MET100Skim/PseudoData.root" , "READONLY" );
+  TFile *f_tt   = TFile::Open("MET100Skim/TTbar.root" , "READONLY" );
+  TFile *f_wjets= TFile::Open("MET100Skim/WJetsToLNu.root" , "READONLY" );
+  TFile *f_qcd  = TFile::Open("MET100Skim/QCD.root" , "READONLY" );
+  TFile *f_st   = TFile::Open("MET100Skim/SingleTop.root" , "READONLY" );
   TFile *f_data = TFile::Open("MET100Skim/Data.root" , "READONLY" );
-  TTree *t_mc   = (TTree*)f_mc->Get("Events");
+  TTree *t_tt   = (TTree*)f_tt->Get("Events");
+  TTree *t_wjets= (TTree*)f_wjets->Get("Events");
+  TTree *t_qcd  = (TTree*)f_qcd->Get("Events");
+  TTree *t_st   = (TTree*)f_st->Get("Events");
   TTree *t_data = (TTree*)f_data->Get("Events");
   
   std::vector<TTree *> samples; samples.clear();
-  samples.push_back(t_mc);
+  samples.push_back(t_tt);
+  samples.push_back(t_wjets);
+  samples.push_back(t_qcd);
+  samples.push_back(t_st);
   samples.push_back(t_data);
 
   float intLumi     = 35.9;
@@ -64,8 +73,8 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   else      { c_algo_wp = "!("+c_algo_wp+")"; }
 
   // matching definition: modify!!
-  TString c_p2 = "( ((AK8Puppijet1_lepCId==11)||(AK8Puppijet1_lepCId==13)) && lmatch==1 )";
-//  TString c_p2 = "( ((AK8Puppijet1_lepCId==11&&AK8Puppijet1_isHadronicV==11)||(AK8Puppijet1_lepCId==13&&AK8Puppijet1_isHadronicV==12)) && lmatch==1 )";
+//  TString c_p2 = "( ((AK8Puppijet1_lepCId==11)||(AK8Puppijet1_lepCId==13)) && lmatch==1 )";
+  TString c_p2 = "( ((AK8Puppijet1_lepCId==11&&AK8Puppijet1_isHadronicV==11)||(AK8Puppijet1_lepCId==13&&AK8Puppijet1_isHadronicV==12)) && lmatch==1 )";
   TString c_p1 = "(!("+c_p2+"))";
 
   // final set of cuts
@@ -84,12 +93,15 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   TString c_jet = "AK8Puppijet0";
 
   // create histos
-  TH1D *h_incl = create1Dhisto(name,samples[0],lumi,cuts[0],c_jet+"_msd",40,50.,250.,false,1,1,"h_"+name+"_incl",false,false,pass,false);      h_incl->SetFillColor(0);
-  TH1D *h_p2   = create1Dhisto(name,samples[0],lumi,cuts[1],c_jet+"_msd",40,50.,250.,false,kRed+1,1,"h_"+name+"_p2",false,false,pass,false);   h_p2->SetFillColor(0);
-  TH1D *h_p1   = create1Dhisto(name,samples[0],lumi,cuts[2],c_jet+"_msd",40,50.,250.,false,kGreen-1,1,"h_"+name+"_p1",false,false,pass,true); h_p1->SetFillColor(0);
+  TH1D *h_incl = create1Dhisto(name,samples[0],lumi,cuts[0],c_jet+"_msd",20,50.,250.,false,1,1,"h_"+name+"_incl",false,false,pass,false);      h_incl->SetFillColor(0);
+  TH1D *h_p5   = create1Dhisto(name,samples[0],lumi,cuts[1],c_jet+"_msd",20,50.,250.,false,kRed+1,1,"h_"+name+"_p5",false,false,pass,false);   h_p5->SetFillColor(0);
+  TH1D *h_p4   = create1Dhisto(name,samples[0],lumi,cuts[2],c_jet+"_msd",20,50.,250.,false,kGreen-1,1,"h_"+name+"_p4",false,false,pass,true); h_p4->SetFillColor(0);
+  TH1D *h_p3   = create1Dhisto(name,samples[1],lumi,cuts[0],c_jet+"_msd",20,50.,250.,false,kRed+1,1,"h_"+name+"_p3",false,false,pass,false);   h_p3->SetFillColor(0);
+  TH1D *h_p2   = create1Dhisto(name,samples[2],lumi,cuts[0],c_jet+"_msd",20,50.,250.,false,kRed+1,1,"h_"+name+"_p2",false,false,pass,false);   h_p2->SetFillColor(0);
+  TH1D *h_p1   = create1Dhisto(name,samples[3],lumi,cuts[0],c_jet+"_msd",20,50.,250.,false,kRed+1,1,"h_"+name+"_p1",false,false,pass,false);   h_p1->SetFillColor(0);
 
   std::cout << "data plotting" << std::endl;
-  TH1D *h_data = create1Dhisto(name,samples[1],lumi,cuts[0],c_jet+"_msd",40,50.,250.,false,1,1,"h_"+name+"_data",false,true,pass,false); h_data->SetFillColor(0);
+  TH1D *h_data = create1Dhisto(name,samples[4],lumi,cuts[0],c_jet+"_msd",20,50.,250.,false,1,1,"h_"+name+"_data",false,true,pass,false); h_data->SetFillColor(0);
   h_data->SetMarkerColor(1); h_data->SetMarkerSize(1.2); h_data->SetMarkerStyle(20);
   h_data->SetLineWidth(1);
 
@@ -112,6 +124,9 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   TString nameoutfile = name+".root"; 
   TFile *fout = new TFile("./"+dirname1+"/"+nameoutfile,"RECREATE");
 
+  h_p5->Write("catp5");
+  h_p4->Write("catp4");
+  h_p3->Write("catp3");
   h_p2->Write("catp2");
   h_p1->Write("catp1");
   h_data->Write("data_obs");

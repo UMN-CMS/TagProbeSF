@@ -1,0 +1,23 @@
+Processing makeSFDatacard.C("T_lsf_test_incl")...
+imax 2  number of channels
+jmax 4  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+shapes  *  pass   T_lsf_test_incl_pass.root  $PROCESS $PROCESS_$SYSTEMATIC
+shapes  *  fail   T_lsf_test_incl_fail.root  $PROCESS $PROCESS_$SYSTEMATIC
+------------
+# we have just one channel, in which we observe 0 events
+bin             pass    fail
+observation      1255  5972
+------------
+# now we list the expected events for signal and all backgrounds in that bin
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal
+# then we list the independent sources of uncertainties, and give their effect (syst. error)
+# on each process and bin
+bin             pass  pass  pass  pass   pass       fail  fail  fail  fail   fail
+process         catp5   catp4   catp3   catp2   catp1      catp5   catp4   catp3   catp2   catp1
+process            0      1       2       3       4         0       1       2       3        4
+rate            868.55 473.631 12.9373 35.744 3.44881 68.4359 2602.6 43.5132 3385.14 61.2512
+------------
+lumi    lnN    1.025  1.025  1.025  1.025  1.025  1.025  1.025  1.025  1.025  1.025
+*  autoMCStats  0

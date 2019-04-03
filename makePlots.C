@@ -56,9 +56,15 @@ void makeDataMCPlotsFromCombine(TString path2file, TString filename, TString sco
 
   // get prefit histograms
   TString prefitstr = "shapes_prefit";
+  TH1F *h_prefit_catp5_ = (TH1F*)fdiag->Get(prefitstr+"/"+category+"/catp5"); h_prefit_catp5_->SetName("h_catp5_");
+  TH1F *h_prefit_catp4_ = (TH1F*)fdiag->Get(prefitstr+"/"+category+"/catp4"); h_prefit_catp4_->SetName("h_catp4_");
+  TH1F *h_prefit_catp3_ = (TH1F*)fdiag->Get(prefitstr+"/"+category+"/catp3"); h_prefit_catp3_->SetName("h_catp3_");
   TH1F *h_prefit_catp2_ = (TH1F*)fdiag->Get(prefitstr+"/"+category+"/catp2"); h_prefit_catp2_->SetName("h_catp2_");
   TH1F *h_prefit_catp1_ = (TH1F*)fdiag->Get(prefitstr+"/"+category+"/catp1"); h_prefit_catp1_->SetName("h_catp1_");
   TH1F *h_prefit_total_ = (TH1F*)fdiag->Get(prefitstr+"/"+category+"/total"); h_prefit_total_->SetName("h_total_");
+  TH1F *h_prefit_catp5 = rescaleXaxis(h_prefit_catp5_,xmin,xmax); h_prefit_catp5->SetName("h_catp5");
+  TH1F *h_prefit_catp4 = rescaleXaxis(h_prefit_catp4_,xmin,xmax); h_prefit_catp4->SetName("h_catp4");
+  TH1F *h_prefit_catp3 = rescaleXaxis(h_prefit_catp3_,xmin,xmax); h_prefit_catp3->SetName("h_catp3");
   TH1F *h_prefit_catp2 = rescaleXaxis(h_prefit_catp2_,xmin,xmax); h_prefit_catp2->SetName("h_catp2");
   TH1F *h_prefit_catp1 = rescaleXaxis(h_prefit_catp1_,xmin,xmax); h_prefit_catp1->SetName("h_catp1");
   TH1F *h_prefit_total = rescaleXaxis(h_prefit_total_,xmin,xmax); h_prefit_total->SetName("h_total");
@@ -68,9 +74,15 @@ void makeDataMCPlotsFromCombine(TString path2file, TString filename, TString sco
   TH1F *h_fit_status = new TH1F("h_fit_status_","h_fit_status_",20,-10.,10.); 
   tree->Project("h_fit_status_","fit_status");
   TString postfitstr = "shapes_fit_s"; if (h_fit_status->GetMean()<0.) { postfitstr = "shapes_prefit"; }
+  TH1F *h_postfit_catp5_ = (TH1F*)fdiag->Get(postfitstr+"/"+category+"/catp5"); h_postfit_catp5_->SetName("h_catp5_");
+  TH1F *h_postfit_catp4_ = (TH1F*)fdiag->Get(postfitstr+"/"+category+"/catp4"); h_postfit_catp4_->SetName("h_catp4_");
+  TH1F *h_postfit_catp3_ = (TH1F*)fdiag->Get(postfitstr+"/"+category+"/catp3"); h_postfit_catp3_->SetName("h_catp3_");
   TH1F *h_postfit_catp2_ = (TH1F*)fdiag->Get(postfitstr+"/"+category+"/catp2"); h_postfit_catp2_->SetName("h_catp2_");
   TH1F *h_postfit_catp1_ = (TH1F*)fdiag->Get(postfitstr+"/"+category+"/catp1"); h_postfit_catp1_->SetName("h_catp1_");
   TH1F *h_postfit_total_ = (TH1F*)fdiag->Get(postfitstr+"/"+category+"/total"); h_postfit_total_->SetName("h_total_");
+  TH1F *h_postfit_catp5 = rescaleXaxis(h_postfit_catp5_,xmin,xmax); h_postfit_catp5->SetName("h_catp5");
+  TH1F *h_postfit_catp4 = rescaleXaxis(h_postfit_catp4_,xmin,xmax); h_postfit_catp4->SetName("h_catp4");
+  TH1F *h_postfit_catp3 = rescaleXaxis(h_postfit_catp3_,xmin,xmax); h_postfit_catp3->SetName("h_catp3");
   TH1F *h_postfit_catp2 = rescaleXaxis(h_postfit_catp2_,xmin,xmax); h_postfit_catp2->SetName("h_catp2");
   TH1F *h_postfit_catp1 = rescaleXaxis(h_postfit_catp1_,xmin,xmax); h_postfit_catp1->SetName("h_catp1");
   TH1F *h_postfit_total = rescaleXaxis(h_postfit_total_,xmin,xmax); h_postfit_total->SetName("h_total");
@@ -81,11 +93,17 @@ void makeDataMCPlotsFromCombine(TString path2file, TString filename, TString sco
   rescaleXaxis(h_data, xmin, (xmax-xmin)/(float)nbins); 
   
   //cosmetics
-  h_prefit_catp2->SetLineColor(633);     h_prefit_catp2->SetLineStyle(2); h_prefit_catp2->SetLineWidth(3); h_prefit_catp2->SetMarkerSize(0);
+  h_prefit_catp5->SetLineColor(633);     h_prefit_catp5->SetLineStyle(2); h_prefit_catp5->SetLineWidth(3); h_prefit_catp5->SetMarkerSize(0);
+  h_prefit_catp4->SetLineColor(kGreen);     h_prefit_catp4->SetLineStyle(2); h_prefit_catp4->SetLineWidth(3); h_prefit_catp4->SetMarkerSize(0);
+  h_prefit_catp3->SetLineColor(kOrange);     h_prefit_catp3->SetLineStyle(2); h_prefit_catp3->SetLineWidth(3); h_prefit_catp3->SetMarkerSize(0);
+  h_prefit_catp2->SetLineColor(kViolet);     h_prefit_catp2->SetLineStyle(2); h_prefit_catp2->SetLineWidth(3); h_prefit_catp2->SetMarkerSize(0);
   h_prefit_catp1->SetLineColor(415);     h_prefit_catp1->SetLineStyle(2); h_prefit_catp1->SetLineWidth(3); h_prefit_catp1->SetMarkerSize(0);
   h_prefit_total->SetLineColor(kBlue+2); h_prefit_total->SetLineStyle(2); h_prefit_total->SetLineWidth(3); h_prefit_total->SetMarkerSize(0);
   
-  h_postfit_catp2->SetLineColor(633);     h_postfit_catp2->SetLineStyle(1); h_postfit_catp2->SetLineWidth(4); h_postfit_catp2->SetMarkerSize(0);
+  h_postfit_catp5->SetLineColor(633);     h_postfit_catp5->SetLineStyle(1); h_postfit_catp5->SetLineWidth(4); h_postfit_catp5->SetMarkerSize(0);
+  h_postfit_catp4->SetLineColor(kGreen);     h_postfit_catp4->SetLineStyle(1); h_postfit_catp4->SetLineWidth(4); h_postfit_catp4->SetMarkerSize(0);
+  h_postfit_catp3->SetLineColor(kOrange);     h_postfit_catp3->SetLineStyle(1); h_postfit_catp3->SetLineWidth(4); h_postfit_catp3->SetMarkerSize(0);
+  h_postfit_catp2->SetLineColor(kViolet);     h_postfit_catp2->SetLineStyle(1); h_postfit_catp2->SetLineWidth(4); h_postfit_catp2->SetMarkerSize(0);
   h_postfit_catp1->SetLineColor(415);     h_postfit_catp1->SetLineStyle(1); h_postfit_catp1->SetLineWidth(4); h_postfit_catp1->SetMarkerSize(0);
   h_postfit_total->SetLineColor(kBlue+2); h_postfit_total->SetLineStyle(1); h_postfit_total->SetLineWidth(4); h_postfit_total->SetMarkerSize(0);
   
@@ -103,8 +121,11 @@ void makeDataMCPlotsFromCombine(TString path2file, TString filename, TString sco
   leg->SetFillStyle(0);
   leg->SetFillColor(0);
   leg->SetLineWidth(0);
-  leg->AddEntry(h_postfit_catp2,"matched","L");
-  leg->AddEntry(h_postfit_catp1,"unmatched","L");
+  leg->AddEntry(h_postfit_catp5,"matched","L");
+  leg->AddEntry(h_postfit_catp4,"unmatched","L");
+  leg->AddEntry(h_postfit_catp3,"wjets","L");
+  leg->AddEntry(h_postfit_catp2,"qcd","L");
+  leg->AddEntry(h_postfit_catp1,"single-t","L");
   leg->AddEntry(h_postfit_total,"Total SM","L");
   leg->AddEntry(h_data,"Data","P");
   
@@ -169,8 +190,14 @@ void makeDataMCPlotsFromCombine(TString path2file, TString filename, TString sco
   h_prefit_total->GetYaxis()->SetTitle("Events / bin");
   h_prefit_total->GetXaxis()->SetTitle(xaxisname);
   h_prefit_total->Draw("HIST E0");
+  h_prefit_catp5->Draw("HIST E0 sames");
+  h_prefit_catp4->Draw("HIST E0 sames");
+  h_prefit_catp3->Draw("HIST E0 sames");
   h_prefit_catp2->Draw("HIST E0 sames");
   h_prefit_catp1->Draw("HIST E0 sames");
+  h_postfit_catp5->Draw("HIST E0 sames");
+  h_postfit_catp4->Draw("HIST E0 sames");
+  h_postfit_catp3->Draw("HIST E0 sames");
   h_postfit_catp2->Draw("HIST E0 sames");
   h_postfit_catp1->Draw("HIST E0 sames");
   h_postfit_total->Draw("HIST E0 sames");
@@ -272,7 +299,7 @@ void getSFSummary(TString object, TString wp) {
       TTree *t_   = (TTree*)fdiag->Get("tree_fit_sb");
 
       TString strCat, strCatLoErr, strCatHiErr;   
-      strCat = "SF_catp2"; strCatLoErr = "SF_catp2LoErr"; strCatHiErr = "SF_catp2HiErr";
+      strCat = "SF_catp5"; strCatLoErr = "SF_catp5LoErr"; strCatHiErr = "SF_catp5HiErr";
       TH1F *h_sf_cat      = new TH1F("h_sf_cat"      , "h_sf_cat"      , 10000,0.,10.);
       TH1F *h_sf_catLoErr = new TH1F("h_sf_catLoErr" , "h_sf_catLoErr" , 10000,0.,10.);
       TH1F *h_sf_catHiErr = new TH1F("h_sf_catHiErr" , "h_sf_catHiErr" , 10000,0.,10.);

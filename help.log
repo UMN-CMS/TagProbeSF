@@ -1,0 +1,87 @@
+Usage: text2workspace.py [options] datacard.txt -o output 
+run with --help to get list of options
+
+Options:
+  -h, --help            show this help message and exit
+  -s, --stat            keep only statistical uncertainties, no systematics
+  -f, --fix-pars        fix all floating parameters of the pdfs except for the
+                        POI
+  -c, --compiled        use compiled expressions (not suggested)
+  -a, --ascii           produce a Workspace in a rootfile in an HLF file
+                        (legacy, unsupported)
+  -b, --binary          produce a Workspace in a rootfile (default)
+  -o OUT, --out=OUT     output file (if none, it will print to stdout).
+                        Required for binary mode.
+  -v VERBOSE, --verbose=VERBOSE
+                        Verbosity level (0 = quiet, 1 = verbose, 2+ = more)
+  -m MASS, --mass=MASS  Higgs mass to use. Will also be written in the
+                        Workspace as RooRealVar 'MH'.
+  -D DATANAME, --dataset=DATANAME
+                        Name of the observed dataset
+  -L LIBS, --LoadLibrary=LIBS
+                        Load these libraries
+  --keyword-value=MODELPARAMS
+                        Set keyword values with 'WORD=VALUE', will replace
+                        $WORD with VALUE in datacards. Filename will also be
+                        extended with 'WORDVALUE'
+  --poisson=POISSON     If set to a positive number, binned datasets wih more
+                        than this number of entries will be generated using
+                        poissonians
+  --default-morphing=DEFMORPH
+                        Default template morphing algorithm (to be used when
+                        the datacard has just 'shape')
+  --no-b-only, --for-fits
+                        Do not save the background-only pdf (saves time)
+  --no-wrappers         Do not create and save the CMSHistFuncWrapper objects
+                        for autoMCStats-based models (saves time)
+  --no-optimize-pdfs    Do not save the RooSimultaneous as RooSimultaneousOpt
+                        and Gaussian constraints as SimpleGaussianConstraint
+  --optimize-simpdf-constraints=MOREOPTIMIZESIMPDF
+                        Handling of constraints in simultaneous pdf: 'none' =
+                        add all constraints on all channels (default);
+                        'lhchcg' = add constraints on only the first channel;
+                        'cms' = add constraints to the RooSimultaneousOpt.
+  --channel-masks       Create channel-masking RooRealVars
+  --use-HistPdf=USEHISTPDF
+                        Use RooHistPdf for TH1s: 'always', 'never' (default),
+                        'when-constant' (i.e. not when doing template
+                        morphing)
+  --X-exclude-nuisance=NUISANCESTOEXCLUDE
+                        Exclude nuisances that match these regular
+                        expressions.
+  --X-rescale-nuisance=NUISANCESTORESCALE
+                        Rescale by this factor the nuisances that match these
+                        regular expressions (the rescaling is applied to the
+                        sigma of the gaussian constraint term).
+  --X-nuisance-function=NUISANCEFUNCTIONS
+                        Set the sigma of the gaussian to be a function for the
+                        nuisances that match the regular expression
+  --X-nuisance-group-function=NUISANCEGROUPFUNCTIONS
+                        Set the sigma of the gaussian to be a function for the
+                        nuisances in the given group
+  --X-force-no-simpdf   FOR DEBUG ONLY: Do not produce a RooSimultaneous if
+                        there is just one channel (note: can affect
+                        performance)
+  --X-no-check-norm     FOR DEBUG ONLY: Turn off the consistency check between
+                        datacard norms and shape norms. Will give you
+                        nonsensical results if you have shape uncertainties.
+  --X-no-jmax           FOR DEBUG ONLY: Turn off the consistency check between
+                        jmax and number of processes.
+  --X-allow-no-signal   Allow parsing datacards that contain only backgrounds
+  --X-allow-no-background
+                        Allow parsing datacards that contain only signal
+  --X-no-optimize-templates
+                        Don't optimize templates on the fly (relevant for HZZ)
+  --X-no-optimize-bound-nusances
+                        Don't flag nuisances to have a different
+                        implementation of bounds
+  --X-no-optimize-bins  Don't optimize template bins (removes padding from
+                        TH1s)
+  -P PHYSMODEL, --physics-model=PHYSMODEL
+                        Physics model to use. It should be in the form (module
+                        name):(object name)
+  --PO=PHYSOPT, --physics-option=PHYSOPT
+                        Pass a given option to the physics model (can specify
+                        multiple times)
+  --dump-datacard       Print to screen the DataCard as a python config and
+                        exit
