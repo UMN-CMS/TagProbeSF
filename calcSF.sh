@@ -3,7 +3,9 @@ object=$1
 algo=$2
 
 declare -a ptranges
-ptranges=("low" "lowmed" "med")
+ptranges=("incl")
+
+wp="test"
 
 workdir=${object}"_"${algo}
 mkdir ${workdir}
@@ -15,6 +17,7 @@ do
     echo "make templates"
     cmdpass=$(echo 'makeSFTemplates.C("'${object}'","'${algo}'","'${wp}'","'${ptrange}'",true)')
     cmdfail=$(echo 'makeSFTemplates.C("'${object}'","'${algo}'","'${wp}'","'${ptrange}'",false)')
+    echo ${cmdpass}
     root -l -q ${cmdpass}
     root -l -q ${cmdfail}
     
@@ -22,29 +25,33 @@ do
     echo "make datacard"
     echo " "
     cd ${workdir}
+    echo ${workdir}
     inputname=${object}"_"${algo}"_"${wp}"_"${ptrange}
     cp ../makeSFDatacard.C .
+    echo ${inputname}
     cmdmakedatacard=$(echo 'makeSFDatacard.C("'${inputname}'")')
     root -l -q ${cmdmakedatacard} > sf.txt
-    sed -n -i '3,$ p' sf.txt
-    
+    cp sf.txt sf_temp1.txt
+    sed -n -i '2,$ p' sf.txt
+    cp sf.txt sf_temp2.txt    
+
     ## do the tag and probe
     echo "run the tag an probe"
     if [ ${object} == "T" ];
     then
-	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp3,catp2,catp1
+	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp2,catp1 --PO verbose
     elif [ ${object} == "W" ];
     then	
-	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp2,catp3,catp1
+	text2workspace.py -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe sf.txt --PO categories=catp2,catp1
     fi
     mv sf.root sf"_"${inputname}".root"
     echo "Do the MultiDimFit"
-    combine -M MultiDimFit -m 125 sf"_"${inputname}.root --algo=singles --robustFit=1 --cminDefaultMinimizerTolerance 5.
+    combine -M MultiDimFit -m 125 sf"_"${inputname}.root --algo=singles --robustFit=1 --cminDefaultMinimizerTolerance 5. -v 1
     echo "Run the FitDiagnostics"    
     combine -M FitDiagnostics -m 125 sf"_"${inputname}.root --saveShapes --saveWithUncertainties --robustFit=1 --cminDefaultMinimizerTolerance 5.
     mv fitDiagnostics.root sf"_"fitDiagnostics"_"${inputname}".root"
     mv sf.txt sf"_"datacard"_"${inputname}".txt"
     cd ../
-    cmdmake=$(echo 'makePlots.C("'${workdir}'","'${inputname}'","'${wp}'","'${ptrange}'",'50.','250.','20',"mass")')
+    cmdmake=$(echo 'makePlots.C("'${workdir}'","'${inputname}'","'${wp}'","'${ptrange}'",'50.','250.','40',"mass")')
     root -l -q ${cmdmake}
 done
