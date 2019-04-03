@@ -12,7 +12,7 @@
 #include <cstdlib>
 
 TH1D *create1Dhisto(TString sample, TTree *tree,TString intLumi,TString cuts,TString branch,int bins,float xmin,float xmax,
-		    bool useLog,int color, int style,TString name,bool norm,bool data);
+		    bool useLog,int color, int style,TString name,bool norm,bool data, bool pass, bool catp1);
 void setTDRStyle();
 
 void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, bool pass) {
@@ -27,8 +27,8 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   gStyle->SetPalette(1);
   TH1::SetDefaultSumw2(kTRUE);
 
-  TFile *f_mc   = TFile::Open("PseudoData.root" , "READONLY" );
-  TFile *f_data = TFile::Open("Data.root" , "READONLY" );
+  TFile *f_mc   = TFile::Open("MET100Skim/PseudoData.root" , "READONLY" );
+  TFile *f_data = TFile::Open("MET100Skim/Data.root" , "READONLY" );
   TTree *t_mc   = (TTree*)f_mc->Get("Events");
   TTree *t_data = (TTree*)f_data->Get("Events");
   
@@ -36,7 +36,7 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   samples.push_back(t_mc);
   samples.push_back(t_data);
 
-  float intLumi     = 36.9;
+  float intLumi     = 35.9;
   ostringstream tmpLumi;
   tmpLumi << intLumi;
   TString lumi = tmpLumi.str();
@@ -51,11 +51,11 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   }
 
   // mass selection
-  TString c_mass = "(AK8Puppijet0_msd>50. && AK8Puppijet0_msd<250.)";
+  TString c_mass = "(AK8Puppijet0_msd>105. && AK8Puppijet0_msd<220.)";
   
   // pt range
   TString c_ptrange;
-  if ( ((TString)object=="T") && (ptrange == "incl") )   { c_ptrange = "(AK8Puppijet0_pt>300.)"; }
+  if ( ((TString)object=="T") && (ptrange == "incl") )   { c_ptrange = "(AK8Puppijet0_pt>450.)"; }
   if ( ((TString)object=="T") && (ptrange == "low") )    { c_ptrange = "(AK8Puppijet0_pt>300. && AK8Puppijet0_pt<=400.)";  }
   if ( ((TString)object=="T") && (ptrange == "med") )    { c_ptrange = "(AK8Puppijet0_pt>400. && AK8Puppijet0_pt<=600.)";  }
 
@@ -64,14 +64,15 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   else      { c_algo_wp = "!("+c_algo_wp+")"; }
 
   // matching definition: modify!!
-  TString c_p2 = "( ((AK8Puppijet1_lepCId==13&&AK8Puppijet1_isHadronicV==12)||(AK8Puppijet1_lepCId==11&&AK8Puppijet1_isHadronicV==11)) && AK8Puppijet1_vSize<0.8 )";
-  TString c_p1 = "(!("+c_p3+" || "+c_p2+"))";
+  TString c_p2 = "( ((AK8Puppijet1_lepCId==11)||(AK8Puppijet1_lepCId==13)) && lmatch==1 )";
+//  TString c_p2 = "( ((AK8Puppijet1_lepCId==11&&AK8Puppijet1_isHadronicV==11)||(AK8Puppijet1_lepCId==13&&AK8Puppijet1_isHadronicV==12)) && lmatch==1 )";
+  TString c_p1 = "(!("+c_p2+"))";
 
   // final set of cuts
-  TString cut = c_base+" && "+c_algo_wp+" && "+c_mass+" && "+c_ptrange; std::cout << cut << "\n";
+  TString cut = c_algo_wp+" && "+c_mass+" && "+c_ptrange; std::cout << "final cut: " << cut << "\n";
   std::vector<TString> cuts; cuts.clear();
   cuts.push_back(cut);
-  cuts.push_back(cut+" && "+c_p3);
+//  cuts.push_back(cut+" && "+c_p3);
   cuts.push_back(cut+" && "+c_p2);
   cuts.push_back(cut+" && "+c_p1);
 
@@ -80,19 +81,22 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
   leg_sample.push_back("unmatched");
   leg_sample.push_back("Data");
 
-  // create histos
-  TH1D *h_incl = create1Dhisto(name,samples[0],lumi,cuts[0],c_jet+"_1_mass",20,50.,250.,false,1,1,"h_"+name+"_incl",false,false);      h_incl->SetFillColor(0);
-  TH1D *h_p2   = create1Dhisto(name,samples[0],lumi,cuts[2],c_jet+"_1_mass",20,50.,250.,false,kRed+1,1,"h_"+name+"_p2",false,false);   h_p2->SetFillColor(0);
-  TH1D *h_p1   = create1Dhisto(name,samples[0],lumi,cuts[3],c_jet+"_1_mass",20,50.,250.,false,kGreen-1,1,"h_"+name+"_p1",false,false); h_p1->SetFillColor(0);
+  TString c_jet = "AK8Puppijet0";
 
-  TH1D *h_data = create1Dhisto(name,samples[1],lumi,cuts[0],c_jet+"_1_mass",20,50.,250.,false,1,1,"h_"+name+"_data",false,true); h_data->SetFillColor(0);
+  // create histos
+  TH1D *h_incl = create1Dhisto(name,samples[0],lumi,cuts[0],c_jet+"_msd",40,50.,250.,false,1,1,"h_"+name+"_incl",false,false,pass,false);      h_incl->SetFillColor(0);
+  TH1D *h_p2   = create1Dhisto(name,samples[0],lumi,cuts[1],c_jet+"_msd",40,50.,250.,false,kRed+1,1,"h_"+name+"_p2",false,false,pass,false);   h_p2->SetFillColor(0);
+  TH1D *h_p1   = create1Dhisto(name,samples[0],lumi,cuts[2],c_jet+"_msd",40,50.,250.,false,kGreen-1,1,"h_"+name+"_p1",false,false,pass,true); h_p1->SetFillColor(0);
+
+  std::cout << "data plotting" << std::endl;
+  TH1D *h_data = create1Dhisto(name,samples[1],lumi,cuts[0],c_jet+"_msd",40,50.,250.,false,1,1,"h_"+name+"_data",false,true,pass,false); h_data->SetFillColor(0);
   h_data->SetMarkerColor(1); h_data->SetMarkerSize(1.2); h_data->SetMarkerStyle(20);
   h_data->SetLineWidth(1);
 
   // avoid zero bins in mc
-  for (unsigned int ii=0; ii<h_p3->GetNbinsX(); ++ii) {
+  for (unsigned int ii=0; ii<h_incl->GetNbinsX(); ++ii) {
     if (h_p2->GetBinContent(ii)<=0) { h_p2->SetBinContent(ii,0.001); h_p2->SetBinError(ii,0.001); }
-    if (h_p1->GetBinContent(ii)<=0) { h_p1->SetBinContent(ii,0.001); h_p1->SetBinError(ii,0.001); }
+//    if (h_p1->GetBinContent(ii)<=0) { h_p1->SetBinContent(ii,0.001); h_p1->SetBinError(ii,0.001); }
   }
 
   TString xname = "m_{SD} [GeV]";
@@ -117,14 +121,29 @@ void makeSFTemplates(TString object, TString algo, TString wp, TString ptrange, 
 
 
 TH1D *create1Dhisto(TString sample,TTree *tree,TString intLumi,TString cuts,TString branch,int bins,float xmin,float xmax,
-		    bool useLog,int color, int style,TString name,bool norm,bool data) {
+		    bool useLog,int color, int style,TString name,bool norm,bool data, bool pass, bool catp1) {
   TH1::SetDefaultSumw2(kTRUE);
 
   TString cut;
   if (data) { cut ="("+cuts+")"; } 
   else {
-    cut ="(xsecWeight*puWeight*"+intLumi+")*("+cuts+")";
+    cut ="(totalWeight)*("+cuts+")";
   }
+/*  if (data) {
+    if (pass) { cut ="("+cuts+")"; }
+    else { cut ="(1/30)*("+cuts+")"; }
+  }
+  else {
+    if (pass){
+	if (catp1) { cut ="(totalWeight*23/30)*("+cuts+")"; }
+	else { cut ="(totalWeight)*("+cuts+")"; }
+    }
+    else { 
+	if (catp1) {cut ="(totalWeight*1/30*0.9)*("+cuts+")"; }
+	else {cut ="(totalWeight)*("+cuts+")"; }
+    }
+//    cut ="(totalWeight*"+intLumi+")*("+cuts+")";
+  }*/
   
   std::cout << "cut = " << cut << "\n";
 

@@ -16,7 +16,7 @@ TH1F *getDataMCratio(TGraphAsymmErrors *indata, TH1F *inMC);
 void setTDRStyle();
 void makeDataMCPlotsFromCombine(TString path2file, TString filename, TString score, TString ptrange, TString category,
  				float xmin, float xmax, int nbins,TString xaxisname, bool log);
-
+void getSFSummary(TString object, TString wp);
 
 void makePlots(TString path2file, TString filename, TString score, TString ptrange, float xmin, float xmax, int nbins, TString xaxis) {
   TH1::SetDefaultSumw2(kTRUE);
@@ -32,7 +32,9 @@ void makePlots(TString path2file, TString filename, TString score, TString ptran
   // make pre/post fit plots
   makeDataMCPlotsFromCombine(path2file,filename,score,ptrange,"pass",xmin,xmax,nbins,xaxis,false);
   makeDataMCPlotsFromCombine(path2file,filename,score,ptrange,"fail",xmin,xmax,nbins,xaxis,false);
-   
+  
+  // get SF info
+  getSFSummary("T", "test");
 }
 
 
@@ -221,20 +223,21 @@ void getSFSummary(TString object, TString wp) {
   std::vector<int> colors; colors.clear();
   
   if (object=="T") {
-    algos.push_back("sdtau32");     legnames.push_back("m_{SD}+#tau_{32}");       colors.push_back(800);
-    algos.push_back("sdtau32btag"); legnames.push_back("m_{SD}+#tau_{32}+b-tag"); colors.push_back(632);
+    algos.push_back("lsf");     legnames.push_back("LSF");       colors.push_back(800);
+//    algos.push_back("sdtau32");     legnames.push_back("m_{SD}+#tau_{32}");       colors.push_back(800);
+//    algos.push_back("sdtau32btag"); legnames.push_back("m_{SD}+#tau_{32}+b-tag"); colors.push_back(632);
     //algos.push_back("hotvr");       legnames.push_back("HOTVR");                  colors.push_back(812);
-    algos.push_back("ecftoptag");   legnames.push_back("CA15-ECF");               colors.push_back(419);
-    algos.push_back("best");        legnames.push_back("BEST");                   colors.push_back(882);
-    algos.push_back("imagetop");    legnames.push_back("ImageTop");               colors.push_back(603);
-    algos.push_back("imagetopmd");  legnames.push_back("ImageTop-MD");            colors.push_back(600);
-    algos.push_back("deepak8");     legnames.push_back("DeepAK8");                colors.push_back(866);
-    algos.push_back("deepak8md");   legnames.push_back("DeepAK8-MD");             colors.push_back(616);
+//    algos.push_back("ecftoptag");   legnames.push_back("CA15-ECF");               colors.push_back(419);
+//    algos.push_back("best");        legnames.push_back("BEST");                   colors.push_back(882);
+//    algos.push_back("imagetop");    legnames.push_back("ImageTop");               colors.push_back(603);
+//    algos.push_back("imagetopmd");  legnames.push_back("ImageTop-MD");            colors.push_back(600);
+//    algos.push_back("deepak8");     legnames.push_back("DeepAK8");                colors.push_back(866);
+//    algos.push_back("deepak8md");   legnames.push_back("DeepAK8-MD");             colors.push_back(616);
     
-    ptrange.push_back("low");
-    ptrange.push_back("lowmed");
-    ptrange.push_back("med");
-    ptrange.push_back("medhi");
+    ptrange.push_back("incl");
+//    ptrange.push_back("lowmed");
+//    ptrange.push_back("med");
+//    ptrange.push_back("medhi");
   }
 
   if (object=="W") {
@@ -351,7 +354,7 @@ void getSFSummary(TString object, TString wp) {
   pt_preliminary->Draw("sames");
   pt_lumi.DrawLatexNDC(0.58,0.93,longstring);
 
-
+  c_sf->Print("test.pdf");
 
 }
 

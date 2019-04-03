@@ -10,7 +10,7 @@ void makeSFDatacard(std::string inputname) {
   TH1D  *h_catp1_fail = (TH1D*)ffail->Get("catp1");
 
   std::cout << "imax 2  number of channels\n";
-  std::cout << "jmax 2  number of backgrounds\n";
+  std::cout << "jmax 1  number of backgrounds\n";
   std::cout << "kmax *  number of nuisance parameters (sources of systematical uncertainties)\n";
   std::cout << "------------\n";
   std::cout << "shapes  *  pass   " << inputname << "_pass.root  $PROCESS $PROCESS_$SYSTEMATIC\n";
@@ -26,13 +26,13 @@ void makeSFDatacard(std::string inputname) {
   std::cout << "# on each process and bin\n";
   std::cout << "bin             pass   pass       fail   fail\n";
   std::cout << "process         catp2   catp1      catp2   catp1\n";  
-  std::cout << "process            -1     2         -1     2\n";
+  std::cout << "process            0     1         0     1\n";
   std::cout << "rate            " 
 	    << h_catp2_pass->Integral(1,h_catp2_pass->GetNbinsX()) << " " << h_catp1_pass->Integral(1,h_catp1_pass->GetNbinsX()) << " "
 	    << h_catp2_fail->Integral(1,h_catp2_fail->GetNbinsX()) << " " << h_catp1_fail->Integral(1,h_catp1_fail->GetNbinsX()) << "\n";
   std::cout << "------------\n";
   std::cout << "lumi    lnN    1.025  1.025  1.025  1.025\n";
-  std::cout << "pu     shape     1      1      1      1  \n";
+//  std::cout << "pu     shape     1      1      1      1  \n";
   std::cout << "*  autoMCStats  0\n";
 
 }
